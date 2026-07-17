@@ -62,6 +62,16 @@ def process_ticker(ticker: str, period: str = "1y") -> pd.DataFrame:
     return clean
 
 
+def get_latest_signals(df):
+    """Extract the most recent RSI and MACD signal for reporting."""
+    latest = df.sort_values("date").iloc[-1]
+    rsi = round(float(latest["rsi"]), 2)
+
+    macd_signal = "bullish crossover" if latest["macd"] > latest["macd_signal"] else "bearish crossover"
+
+    return rsi, macd_signal
+
+
 if __name__ == "__main__":
     init_db()
 
@@ -69,7 +79,7 @@ if __name__ == "__main__":
 
     for t in tickers:
         try:
-            df = process_ticker(t)
+            df = process_ticker(t, period="5y")
             print(df.tail(3))
             print("-" * 60)
         except ValueError as e:
