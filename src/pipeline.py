@@ -61,16 +61,19 @@ def report_node(state: PipelineState) -> PipelineState:
     if state.get("error"):
         return {**state, "report": f"Could not generate report: {state['error']}"}
 
+    currency = "₹" if state["ticker"].endswith(".NS") else "$"
+
     report = generate_report(
-    ticker=state["ticker"],
-    latest_close=state["latest_close"],
-    predicted_price=state["predicted_price"],
-    predicted_return_pct=state["predicted_return_pct"],
-    naive_mape=state["naive_mape"],
-    xgb_mape=state["xgb_mape"],
-    rsi=state["rsi"],
-    macd_signal=state["macd_signal"],
-)
+        ticker=state["ticker"],
+        latest_close=state["latest_close"],
+        predicted_price=state["predicted_price"],
+        predicted_return_pct=state["predicted_return_pct"],
+        naive_mape=state["naive_mape"],
+        xgb_mape=state["xgb_mape"],
+        rsi=state["rsi"],
+        macd_signal=state["macd_signal"],
+        currency=currency,
+    )
     return {**state, "report": report}
 
 
