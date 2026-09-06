@@ -1,0 +1,118 @@
+.results-wrapper {
+  min-height: 100vh;
+  padding: 1.5rem 2.5rem 3rem;
+}
+
+.back-button {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1.2rem;
+}
+.back-button:hover { border-color: var(--accent); }
+
+.results-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1.4rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  color: var(--subtext);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.metric-value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.metric-delta-pos { color: #34D399; font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem; }
+.metric-delta-neg { color: #F87171; font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem; }
+
+.results-body {
+  display: grid;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-card, .perf-card, .report-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+
+.section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.perf-row { margin-bottom: 0.9rem; }
+.perf-verdict {
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 0.6rem;
+}
+.perf-good { color: #34D399; }
+.perf-warn { color: #F59E0B; }
+
+.report-card {
+  border-left: 3px solid var(--accent);
+  line-height: 1.75;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+
+.results-disclaimer {
+  text-align: center;
+  color: var(--subtext);
+  font-size: 0.8rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.loading-chart {
+  color: var(--subtext);
+  font-size: 0.9rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .results-body { grid-template-columns: 1fr; }
+}
