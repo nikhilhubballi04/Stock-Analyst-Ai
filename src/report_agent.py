@@ -1,13 +1,16 @@
+import os
 import requests
 
+USE_GROQ = os.getenv("USE_GROQ", "false").lower() == "true"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.2:3b"  # change to llama3.2:3b if you pulled the smaller one
+MODEL_NAME = "llama3.2:3b"
 
 
-def generate_report(ticker: str, latest_close: float, predicted_price: float,
-                     predicted_return_pct: float, naive_mape: float,
-                     xgb_mape: float, rsi: float, macd_signal: str,
-                     currency: str = "$") -> str:
+def generate_report(ticker, latest_close, predicted_price, predicted_return_pct,
+                     naive_mape, xgb_mape, rsi, macd_signal, currency="$"):
 
     if xgb_mape < naive_mape:
         comparison_text = f"The XGBoost model outperformed the naive baseline ({xgb_mape}% vs {naive_mape}% MAPE)."
@@ -20,8 +23,7 @@ def generate_report(ticker: str, latest_close: float, predicted_price: float,
 
 STRICT RULE: Only use the numbers provided below. Do not invent, estimate,
 or reference any number not explicitly given to you. Use the comparison
-verdict below exactly as given — do not recalculate or reinterpret it.
-Use the currency symbol "{currency}" for all prices, not "$".
+verdict below exactly as given. Use the currency symbol "{currency}" for all prices.
 
 DATA:
 - Ticker: {ticker}
@@ -32,34 +34,26 @@ DATA:
 - Current RSI: {rsi} ({"overbought" if rsi > 70 else "oversold" if rsi < 30 else "neutral"})
 - MACD signal: {macd_signal}
 
-Write a 4-5 sentence analyst note that:
-1. States the current price and the model's predicted move using {currency}
-2. Mentions the RSI/MACD signal in plain English
-3. States the backtest comparison verdict exactly as given above
-4. Ends with a brief, appropriately cautious note that this is not financial
-   advice and price prediction from technical indicators alone has known
-   limitations
+Write a 4-5 sentence analyst note covering the price move, the RSI/MACD signal,
+the backtest verdict exactly as given, and a brief note that this isn't financial advice."""
 
-Keep it professional and concise, like a real analyst memo."""
-
-    response = requests.post(
-        OLLAMA_URL,
-        json={"model": MODEL_NAME, "prompt": prompt, "stream": False},
-        timeout=120
-    )
-    response.raise_for_status()
-    return response.json()["response"]
-
-
-if __name__ == "__main__":
-    test_report = generate_report(
-        ticker="AAPL",
-        latest_close=315.32,
-        predicted_price=314.93,
-        predicted_return_pct=-0.123,
-        naive_mape=1.6,
-        xgb_mape=1.6,
-        rsi=58.2,
-        macd_signal="bullish crossover"
-    )
-    print(test_report)
+    if USE_GROQ:
+        response = requests.post(
+            GROQ_URL,
+            headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+            json={
+                "model": "llama-3.1-8b-instant",
+                "messages": [{"role": "user", "content": prompt}],
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        return response.json()["choices"][0]["message"]["content"]
+    else:
+        response = requests.post(
+            OLLAMA_URL,
+            json={"model": MODEL_NAME, "prompt": prompt, "stream": False},
+            timeout=120,
+        )
+        response.raise_for_status()
+        return response.json()["response"]
